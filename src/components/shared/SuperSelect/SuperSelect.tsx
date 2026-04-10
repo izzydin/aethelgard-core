@@ -67,8 +67,11 @@ export const SuperSelect = ({ value, onChange, children }: { value: any; onChang
 
 const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
   <svg 
-    className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-brand-gold-base' : 'text-slate-400'}`}
-    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    className={`w-5 h-5 min-w-[20px] min-h-[20px] block flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-brand-gold-base' : 'text-slate-400'}`}
+    fill="none" stroke="currentColor"
   >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
   </svg>
