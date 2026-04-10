@@ -60,10 +60,19 @@ export const SuperSelect = ({ value, onChange, children }: { value: any; onChang
         visibleOptions,
       }}
     >
-      <div className="relative w-full max-w-sm">{children}</div>
+      <div className="relative w-full">{children}</div>
     </Context.Provider>
   );
 };
+
+const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
+  <svg 
+    className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-brand-gold-base' : 'text-slate-400'}`}
+    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+  </svg>
+);
 
 SuperSelect.Input = function Input({ placeholder = '', className = '' }: { placeholder?: string; className?: string }) {
   const { inputValue, setInputValue, isOpen, setIsOpen, visibleOptions, focusedValue, setFocusedValue, onChange } = useSuperSelect();
@@ -103,22 +112,27 @@ SuperSelect.Input = function Input({ placeholder = '', className = '' }: { place
   };
 
   return (
-    <input
-      type="text"
-      value={inputValue}
-      onChange={(e) => {
-        setInputValue(e.target.value);
-        setIsOpen(true);
-        setFocusedValue(null);
-      }}
-      onFocus={() => setIsOpen(true)}
-      onKeyDown={handleKeyDown}
-      placeholder={placeholder}
-      className={`w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold bg-brand-slate text-white ${className}`}
-      aria-expanded={isOpen}
-      aria-controls="super-select-list"
-      aria-autocomplete="list"
-    />
+    <div className="relative flex items-center justify-between w-full gap-2 px-4 py-2 bg-brand-light/50 border border-brand-border rounded-lg group has-[:focus-visible]:border-brand-gold-base has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-brand-gold-base/30 transition-all duration-200 shadow-sm text-slate-100">
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          setIsOpen(true);
+          setFocusedValue(null);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        className={`w-full flex-1 bg-transparent border-none focus:outline-none placeholder-slate-500 truncate ${className}`}
+        aria-expanded={isOpen}
+        aria-controls="super-select-list"
+        aria-autocomplete="list"
+      />
+      <div className="pointer-events-none flex-shrink-0 flex items-center justify-center transition-colors group-hover:text-brand-gold-base/70">
+        <ChevronIcon isOpen={isOpen} />
+      </div>
+    </div>
   );
 };
 
@@ -130,9 +144,11 @@ SuperSelect.List = function List({ children, className = '' }: { children: React
     <div
       id="super-select-list"
       role="listbox"
-      className={`absolute z-10 w-full mt-1 bg-brand-slate border border-gray-700 rounded shadow-lg max-h-60 overflow-y-auto ${className}`}
+      className={`absolute left-0 right-0 z-50 mt-2 animate-dropdown glassmorphism rounded-xl overflow-hidden ${className}`}
     >
-      {children}
+      <div className="max-h-60 overflow-y-auto py-2 px-1 custom-scrollbar">
+        {children}
+      </div>
     </div>
   );
 };
@@ -183,8 +199,10 @@ SuperSelect.Option = function Option({
         setInputValue(''); // Reset input value after selection
       }}
       onMouseEnter={() => setFocusedValue(value)}
-      className={`px-4 py-2 cursor-pointer transition-colors ${
-        isActive ? 'bg-gray-800 text-brand-gold' : 'text-gray-200'
+      className={`px-3 py-2.5 mx-1 my-0.5 rounded-lg cursor-pointer transition-all border-l-4 ${
+        isSelected ? 'border-brand-gold-base bg-brand-gold-base/5' : 'border-transparent'
+      } ${
+        isActive ? 'bg-brand-light/80 text-brand-gold-hover' : 'text-slate-300 hover:bg-brand-light/40 hover:text-white'
       } ${className}`}
     >
       {typeof children === 'function' ? children({ active: isActive, selected: isSelected }) : children}
